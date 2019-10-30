@@ -1,0 +1,64 @@
+{
+	"name": "vscode-creator",
+	"displayName": "vscode-creator",
+	"description": "template creator code",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.39.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:extension.delTemplate",
+		"onCommand:extension.creatorTemplate"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.creatorTemplate",
+				"title": "Creator Your Module"
+			},
+			{
+				"command": "extension.delTemplate",
+				"title": "Delete Your Module"
+			},
+			{
+				"command": "extension.createTemplate",
+				"title": "生成模块 ..."
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "extension.createTemplate",
+					"group": "navigation"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "yarn run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "yarn run compile",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.1.1",
+		"@types/mocha": "^5.2.6",
+		"@types/node": "^10.12.21",
+		"@types/vscode": "^1.39.0",
+		"glob": "^7.1.4",
+		"mocha": "^6.1.4",
+		"tslint": "^5.12.1",
+		"typescript": "^3.3.1",
+		"vscode-test": "^1.2.0"
+	},
+	"dependencies": {
+		"@types/fs-extra": "^8.0.1",
+		"chokidar": "^3.2.3",
+		"fs-extra": "^8.1.0"
+	}
+}
