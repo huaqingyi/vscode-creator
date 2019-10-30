@@ -2,7 +2,7 @@
 	"name": "vscode-creator",
 	"displayName": "vscode-creator",
 	"description": "template creator code",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.39.0"
 	},
@@ -60,5 +60,9 @@
 		"@types/fs-extra": "^8.0.1",
 		"chokidar": "^3.2.3",
 		"fs-extra": "^8.1.0"
+	},
+	"author": {
+		"name": "huaqingyi",
+		"email": "2304816231@qq.com"
 	}
 }
