@@ -85,23 +85,24 @@ export function activate(context: vscode.ExtensionContext) {
 			placeHolder: '温馨提示，请选择缓存模板: '
 		});
 		if (ds === undefined) { return; }
-		const res = await vscode.window.showInputBox({ // 这个对象中所有参数都是可选参数
+		let rpath: string | undefined = await vscode.window.showInputBox({ // 这个对象中所有参数都是可选参数
 			password: false, // 输入内容是否是密码
 			ignoreFocusOut: true, // 默认false，设置为true时鼠标点击别的地方输入框不会消失
 			placeHolder: '生成模块名: ', // 在输入框内的提示信息
 			prompt: '生成模块名, 与功能 Component 相同 .', // 在输入框下方的提示信息
 		});
-		if (!res) { return await vscode.window.showInformationMessage('请给模板命名 ...'); }
+		if (!rpath) { return await vscode.window.showInformationMessage('请给模板命名 ...'); }
+		const res: string = rpath.slice(0, 1).toLocaleUpperCase().concat(rpath.slice(1, rpath.length));
 		// await copySync(join(path, res), uri.path);
 		const watcher = watch(join(path, ds));
 		watcher.on('add', async fpath => {
 			if (fpath.split('/').pop() === 'config.json') { return; }
+			const packpath = fpath.replace(path, '').replace(ds, '').replace('$__ModuleName__$', res);
+			const tofpath = join(uri.path, rpath || '', packpath);
+			await mkdirs(dirname(tofpath));
 			const data = readFileSync(fpath, 'utf-8');
-			const filename = fpath.replace('$__ModuleName__$', res).replace(path, '');
-			await mkdirs(dirname(join(uri.path, filename).replace(ds, res)));
 			await writeFileSync(
-				join(uri.path, filename).replace(ds, res),
-				data.split('$__ModuleName__$').join(res)
+				tofpath, data.split('$__ModuleName__$').join(res)
 			);
 		});
 		watcher.on('ready', () => {
