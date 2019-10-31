@@ -74,7 +74,6 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(delTemplate);
 
 	const createTemplate = vscode.commands.registerCommand('extension.createTemplate', async (uri) => {
-		console.log(uri);
 		const dirs = await readdirSync(path);
 		if (dirs.length === 0) { return await vscode.window.showInformationMessage('请先创建模块模板 ...'); }
 
@@ -83,7 +82,7 @@ export function activate(context: vscode.ExtensionContext) {
 			ignoreFocusOut: true,
 			matchOnDescription: true,
 			matchOnDetail: true,
-			placeHolder: '温馨提示，请选择缓存模板？'
+			placeHolder: '温馨提示，请选择缓存模板: '
 		});
 		if (ds === undefined) { return; }
 		const res = await vscode.window.showInputBox({ // 这个对象中所有参数都是可选参数
@@ -95,14 +94,15 @@ export function activate(context: vscode.ExtensionContext) {
 		if (!res) { return await vscode.window.showInformationMessage('请给模板命名 ...'); }
 		// await copySync(join(path, res), uri.path);
 		const watcher = watch(join(path, ds));
-		console.log(join(path, ds));
-		watcher.on('add', async path => {
-			console.log(path);
-			const data = readFileSync(path, 'utf-8');
-			const filename = path.replace('$__ModuleName__$', res);
-			await writeFileSync(filename, data.split('$__ModuleName__$').join(res));
-			await copySync(filename, dirname(path));
-			await removeSync(filename);
+		watcher.on('add', async fpath => {
+			if (fpath.split('/').pop() === 'config.json') { return; }
+			const data = readFileSync(fpath, 'utf-8');
+			const filename = fpath.replace('$__ModuleName__$', res).replace(path, '');
+			await mkdirs(dirname(join(uri.path, filename).replace(ds, res)));
+			await writeFileSync(
+				join(uri.path, filename).replace(ds, res),
+				data.split('$__ModuleName__$').join(res)
+			);
 		});
 		watcher.on('ready', () => {
 			watcher.close();
