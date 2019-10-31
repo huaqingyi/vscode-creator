@@ -2,7 +2,7 @@
 	"name": "vscode-creator",
 	"displayName": "vscode-creator",
 	"description": "template creator code",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"engines": {
 		"vscode": "^1.39.0"
 	},
